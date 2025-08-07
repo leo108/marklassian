@@ -115,10 +115,26 @@ function processTable(token: Tokens.Table): AdfNode {
 
   const rows = token.rows.map((row) => ({
     type: "tableRow",
-    content: row.map((cell) => ({
-      type: "tableCell",
-      content: processParagraph(cell.tokens),
-    })),
+    content: row.map((cell) => {
+      const content = processParagraph(cell.tokens);
+
+      if (content.length === 0) {
+        content.push({
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: "",
+            },
+          ],
+        });
+      }
+
+      return {
+        type: "tableCell",
+        content,
+      };
+    }),
   }));
 
   const content = [];
